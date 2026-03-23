@@ -1,0 +1,29 @@
+DANH SÁCH CÁC TÌNH HUỐNG LỖI CÓ THỂ XẢY RA TRONG HỆ THỐNG RIKKEI-CARE
+
+1. LỖI PHÍA DATABASE:
+   - Duplicate Key: Mã bác sĩ trùng lặp (vi phạm Primary Key)
+   - Data Too Long: Dữ liệu nhập quá dài so với cột trong database
+   - Null Constraint: Các trường bắt buộc bị để trống
+   - Foreign Key: Nếu có tham chiếu đến bảng khác nhưng không tồn tại
+
+2. LỖI PHÍA NGƯỜI DÙNG:
+   - Invalid Input: Nhập sai định dạng (ví dụ: nhập chữ thay vì số trong menu)
+   - Empty Input: Để trống các trường thông tin bắt buộc
+   - Special Characters: Nhập các ký tự đặc biệt có thể gây lỗi SQL
+
+3. LỖI KẾT NỐI:
+   - Connection Timeout: Database không phản hồi
+   - Invalid Credentials: Sai thông tin đăng nhập database
+   - Network Issues: Mất kết nối mạng
+
+4. LỖI HỆ THỐNG:
+   - OutOfMemory: Hệ thống hết bộ nhớ
+   - FileNotFound: File cấu hình bị mất
+   - ClassNotFoundException: Thiếu driver JDBC
+
+CÁCH XỬ LÝ TRONG CODE:
+- Sử dụng try-catch để bắt các例外 SQLException
+- Kiểm tra dữ liệu đầu vào trước khi thêm vào database
+- Hiển thị thông báo lỗi rõ ràng cho người dùng
+- Sử dụng PreparedStatement để tránh SQL Injection
+- Validate input: không để trống, độ dài hợp lệ

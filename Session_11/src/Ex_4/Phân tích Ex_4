@@ -1,0 +1,22 @@
+Khi bạn sử dụng phương pháp cộng chuỗi trực tiếp để tạo câu lệnh SQL, luồng thực thi sẽ bị thay đổi như sau:
+
+Dữ liệu đầu vào độc hại: Kẻ tấn công không nhập tên bệnh nhân bình thường mà
+nhập một chuỗi chứa các ký tự điều khiển SQL: '' OR '1'='1'.
+
+Quá trình nối chuỗi (String Concatenation):
+
+Câu lệnh gốc: SELECT * FROM Patients WHERE full_name = ' + patientName + '
+
+Sau khi nối chuỗi: SELECT * FROM Patients WHERE full_name = '' OR '1'='1'
+
+Tại sao mệnh đề WHERE luôn đúng (Always True)?
+
+Cấu trúc điều kiện lúc này trở thành: [Điều kiện A] OR [Điều kiện B].
+
+Trong đó [Điều kiện B] là '1'='1'. Trong toán học và lập trình, biểu thức này luôn trả về giá trị True (đúng).
+
+Theo quy tắc của phép toán logic OR, chỉ cần một trong hai vế đúng thì toàn bộ mệnh đề sẽ đúng.
+Do đó, Database sẽ bỏ qua việc kiểm tra tên bệnh nhân và coi như mọi dòng trong bảng đều thỏa mãn điều kiện.
+
+Hậu quả: Thay vì chỉ trả về thông tin của một người, hệ thống sẽ trả về toàn bộ danh sách bệnh
+nhân trong cơ sở dữ liệu, dẫn đến rò rỉ thông tin y tế nhạy cảm.

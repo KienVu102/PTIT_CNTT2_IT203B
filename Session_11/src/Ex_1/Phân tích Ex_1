@@ -1,0 +1,12 @@
+Phân tích Bài 1:
+
+Tại sao hệ thống bị treo?
+
+Nguyên nhân: Trong mã nguồn cũ, mỗi lần gọi hàm getHospitalConn(), một kết nối mới được
+tạo ra nhưng không bao giờ được đóng lại (conn.close()).
+
+Hậu quả: Các kết nối này chiếm dụng bộ nhớ RAM và vượt quá giới hạn "Connection Pool" của MySQL.
+Khi đạt đến giới hạn, Database sẽ từ chối mọi kết nối mới, gây ra lỗi Communications link failure
+và làm treo toàn bộ phần mềm của bệnh viện.
+
+Giải pháp: Phải sử dụng khối finally để đảm bảo lệnh conn.close() luôn được thực thi, kể cả khi có lỗi xảy ra.

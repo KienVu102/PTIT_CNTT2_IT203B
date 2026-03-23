@@ -12,9 +12,14 @@ public class DBContext {
     public static Connection getConnection() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USER, PASS);
+            Connection conn = DriverManager.getConnection(URL, USER, PASS);
+
+            if (conn != null && !conn.isClosed()) {
+                System.out.println("HỆ THỐNG: Kết nối đến Hospital_DB thành công!");
+            }
+            return conn;
         } catch (ClassNotFoundException e) {
-            throw new SQLException("Không tìm thấy Driver MySQL!", e);
+            throw new SQLException("Không tìm thấy Driver JDBC: " + e.getMessage());
         }
     }
 }

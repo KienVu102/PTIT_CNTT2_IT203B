@@ -1,0 +1,11 @@
+Vấn đề của lệnh if (rs.next()):
+
+Trong mã nguồn lỗi, việc sử dụng if chỉ kiểm tra điều kiện một lần duy nhất. Do đó,
+con trỏ của ResultSet chỉ di chuyển đến dòng dữ liệu đầu tiên, in ra rồi kết thúc chương trình.
+Điều này khiến danh mục thuốc bị thiếu hụt nếu trong kho có từ 2 loại thuốc trở lên.
+
+
+Cơ chế hoạt động của while (rs.next()):
+Sau mỗi lần gọi next(), con trỏ của ResultSet sẽ tự động nhảy xuống dòng tiếp theo trong bảng kết quả.
+Vòng lặp while sẽ liên tục di chuyển con trỏ cho đến khi không còn dòng nào nữa (trả về false), đảm bảo
+in ra toàn bộ danh sách thuốc hiện có trong kho mà không bỏ sót bất kỳ bản ghi nào.

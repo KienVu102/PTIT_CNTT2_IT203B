@@ -1,10 +1,12 @@
 package Ex_5;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.List;
 
 public class Main {
     private static Scanner sc = new Scanner(System.in);
+    private static DoctorService doctorService = new DoctorService();
 
     public static void main(String[] args) {
         while (true) {
@@ -14,57 +16,72 @@ public class Main {
             System.out.println("3. Thống kê chuyên khoa");
             System.out.println("4. Thoát");
             System.out.print("Chọn chức năng: ");
-            int choice = Integer.parseInt(sc.nextLine());
-
-            switch (choice) {
-                case 1: showAllDoctors(); break;
-                case 2: addDoctor(); break;
-                case 3: statisticsBySpec(); break;
-                case 4: System.exit(0);
-                default: System.out.println("Chọn sai!");
+            
+            try {
+                int choice = Integer.parseInt(sc.nextLine());
+                
+                switch (choice) {
+                    case 1: showAllDoctors(); break;
+                    case 2: addDoctor(); break;
+                    case 3: statisticsBySpec(); break;
+                    case 4: System.exit(0);
+                    default: System.out.println("Chọn sai!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Lỗi: Vui lòng nhập số từ 1-4!");
             }
         }
     }
 
     private static void showAllDoctors() {
-        try (Connection conn = DBContext.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM Doctors")) {
+        try {
+            List<Doctor> doctors = doctorService.getAllDoctors();
+            
             System.out.printf("%-10s | %-20s | %-20s\n", "Mã số", "Họ tên", "Chuyên khoa");
-            while (rs.next()) {
+            System.out.println("--------------------------------------------");
+            
+            for (Doctor doctor : doctors) {
                 System.out.printf("%-10s | %-20s | %-20s\n",
-                        rs.getString("doctor_id"), rs.getString("full_name"), rs.getString("specialization"));
+                    doctor.getId(), doctor.getName(), doctor.getSpec());
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy danh sách bác sĩ: " + e.getMessage());
+        }
     }
 
     private static void addDoctor() {
-        System.out.print("Nhập mã bác sĩ: "); String id = sc.nextLine();
-        System.out.print("Nhập họ tên: "); String name = sc.nextLine();
-        System.out.print("Nhập chuyên khoa: "); String spec = sc.nextLine();
-
-        String sql = "INSERT INTO Doctors VALUES (?, ?, ?)";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, id);
-            pstmt.setString(2, name);
-            pstmt.setString(3, spec);
-            pstmt.executeUpdate();
-            System.out.println("Thêm thành công!");
+        try {
+            System.out.print("Nhập mã bác sĩ: ");
+            String id = sc.nextLine();
+            System.out.print("Nhập họ tên: ");
+            String name = sc.nextLine();
+            System.out.print("Nhập chuyên khoa: ");
+            String spec = sc.nextLine();
+            
+            if (id.trim().isEmpty() || name.trim().isEmpty() || spec.trim().isEmpty()) {
+                System.out.println("Lỗi: Không được để trống các trường thông tin!");
+                return;
+            }
+            
+            Doctor doctor = new Doctor(id, name, spec);
+            boolean success = doctorService.addDoctor(doctor);
+            
+            if (success) {
+                System.out.println("Thêm bác sĩ thành công!");
+            } else {
+                System.out.println("Lỗi: Không thể thêm bác sĩ!");
+            }
         } catch (SQLException e) {
-            System.out.println("Lỗi: Mã bác sĩ có thể đã tồn tại hoặc dữ liệu quá dài!");
+            System.out.println("Lỗi: " + e.getMessage());
+            System.out.println("Nguyên nhân có thể: Mã bác sĩ đã tồn tại hoặc dữ liệu quá dài!");
         }
     }
 
     private static void statisticsBySpec() {
-        String sql = "SELECT specialization, COUNT(*) as count FROM Doctors GROUP BY specialization";
-        try (Connection conn = DBContext.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            System.out.printf("%-20s | %-10s\n", "Chuyên khoa", "Số lượng");
-            while (rs.next()) {
-                System.out.printf("%-20s | %-10d\n", rs.getString("specialization"), rs.getInt("count"));
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
+        try {
+            doctorService.displayDoctorStatistics();
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi thống kê: " + e.getMessage());
+        }
     }
 }

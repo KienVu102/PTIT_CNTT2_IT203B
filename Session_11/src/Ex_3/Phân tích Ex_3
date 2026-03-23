@@ -1,0 +1,13 @@
+Ý nghĩa giá trị trả về của executeUpdate():
+
+Khác với executeQuery() trả về một ResultSet, hàm executeUpdate() trả về một số nguyên (int).
+
+Số nguyên này đại diện cho số lượng dòng (rows) bị tác động (thêm, sửa, hoặc xóa) bởi câu lệnh SQL trong Database.
+
+Cách phản hồi "Mã giường không tồn tại":
+
+Khi thực hiện lệnh UPDATE, nếu mã giường (bed_id) không có trong bảng, Database sẽ không tìm thấy
+dòng nào để cập nhật. Khi đó, executeUpdate() sẽ trả về giá trị là 0.
+
+Giải pháp: Chúng ta chỉ cần kiểm tra giá trị này. Nếu rowsAffected == 0, hệ thống sẽ in ra
+thông báo lỗi "Mã giường không tồn tại" để y tá biết và kiểm tra lại mã đã nhập.
