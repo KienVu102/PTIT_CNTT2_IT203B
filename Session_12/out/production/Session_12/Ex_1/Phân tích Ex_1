@@ -1,0 +1,16 @@
+Tại sao PreparedStatement là "tấm khiên"?
+Khi dùng Statement (như trong ảnh lỗi), câu lệnh SQL và dữ liệu đầu vào bị trộn lẫn.
+Kẻ tấn công có thể nhập ' OR '1'='1 để thay đổi cấu trúc câu lệnh.
+
+Ngược lại, PreparedStatement hoạt động theo 3 bước tách biệt:
+
+Gửi khuôn mẫu: Java gửi câu lệnh SQL có chứa dấu chấm hỏi (?) lên Database trước.
+
+Biên dịch (Pre-compiled): Database nhận khuôn mẫu này và biên dịch sẵn kế hoạch thực thi.
+Lúc này, cấu trúc câu lệnh đã được "chốt cố định".
+
+Truyền tham số: Java mới gửi giá trị thực tế (code, pass) vào các dấu ?.
+
+Mấu chốt: Vì câu lệnh đã được biên dịch xong ở bước 2, nên dù bạn có nhập ' OR '1'='1,
+Database cũng chỉ coi đó là một chuỗi văn bản thuần túy để tìm kiếm, chứ không thể biến nó thành
+một phần của lệnh Logic SQL được nữa.

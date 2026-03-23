@@ -1,0 +1,9 @@
+Tại sao bắt buộc phải gọi registerOutParameter()?
+
+JDBC cần biết trước kiểu dữ liệu của tham số đầu ra (OUT) để cấp phát bộ nhớ và chuẩn bị trình xử lý dữ
+liệu phù hợp trước khi Database thực thi. Nếu không đăng ký, Java sẽ không biết cách "hứng" kết quả trả về,
+dẫn đến lỗi index hoặc sai kiểu dữ liệu.
+
+Đăng ký kiểu DECIMAL:
+
+Nếu tham số đầu ra là kiểu DECIMAL hoặc NUMERIC trong SQL, trong Java bạn phải đăng ký bằng hằng số: java.sql.Types.DECIMAL.

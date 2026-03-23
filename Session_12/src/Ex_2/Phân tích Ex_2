@@ -1,0 +1,8 @@
+Tại sao setDouble(), setInt() lại giải quyết được vấn đề dấu chấm/dấu phẩy?
+
+Truyền dữ liệu dạng nhị phân: Khi dùng Statement nối chuỗi, Java phải biến số 37.5
+thành chuỗi văn bản "37.5" hoặc "37,5" tùy vào cài đặt máy tính. Nhưng với PreparedStatement,
+dữ liệu được truyền đi dưới dạng giá trị gốc (kiểu số nguyên thủy).Tách biệt định dạng và dữ liệu:
+Các phương thức setDouble() và setInt() gửi giá trị trực tiếp vào driver JDBC. Driver này sẽ tự động
+giao tiếp với Database bằng ngôn ngữ máy mà không cần quan tâm đến định dạng hiển thị của hệ điều hành
+(Locale).An toàn tuyệt đối: Nó đảm bảo Database luôn nhận đúng giá trị là $37.5$ bất kể bạn đang ngồi ở Pháp, Việt Nam hay Mỹ.

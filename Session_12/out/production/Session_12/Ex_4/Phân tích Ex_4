@@ -1,0 +1,11 @@
+Khi dùng Statement nối chuỗi bên trong vòng lặp 1.000 lần:
+
+Parse & Compile lại: Database Server buộc phải phân tích cú pháp (Parse),
+kiểm tra quyền hạn và lập kế hoạch thực thi (Execution Plan) cho mỗi câu lệnh riêng biệt,
+dù cấu trúc của chúng giống hệt nhau (chỉ khác giá trị dữ liệu).
+
+Bộ nhớ đệm (Plan Cache): Việc này làm tràn ngập bộ nhớ đệm của Database bằng hàng ngàn
+kế hoạch thực thi vô ích, gây áp lực lớn lên CPU và RAM của máy chủ.
+
+Giao tiếp mạng: Mỗi lần gọi executeUpdate() là một lần Java phải gửi toàn bộ chuỗi SQL
+dài dằng dặc qua mạng, làm tăng độ trễ (Latency).
