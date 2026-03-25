@@ -1,0 +1,9 @@
+Mặc dù đã tắt autoCommit, nhưng trong khối catch chỉ có System.out.println() nên khi lỗi ở bước 2:
+
+Giao dịch không được commit()
+Cũng không được rollback()
+
+→ Kết nối bị treo ở trạng thái pending transaction, bước 1 (trừ tiền) không được hủy,
+lãng phí resource và vi phạm Atomicity.
+Hành động bị bỏ quên: conn.rollback();
+phải tự rollback khi có SQLException để đưa database về trạng thái ban đầu.

@@ -1,0 +1,28 @@
+1. Phân tích bài toán (I/O)
+Input:
+
+maBenhNhan (int)
+tienVienPhi (double)
+
+Output:
+
+Thành công: “Xuất viện thành công”, tiền bị trừ, giường được giải phóng, trạng thái bệnh nhân cập nhật.
+Thất bại: Báo lỗi + Rollback toàn bộ, dữ liệu không thay đổi.
+
+2. Đề xuất giải pháp
+
+Dùng Transaction: conn.setAutoCommit(false)
+Kiểm tra số dư trước khi trừ tiền (SELECT + if).
+Sau mỗi UPDATE kiểm tra rowAffected, nếu = 0 thì throw Exception.
+Bắt exception trong catch rồi rollback().
+Đóng kết nối trong finally.
+
+3. Thiết kế các bước xử lý
+
+Mở kết nối, tắt Auto-Commit.
+SELECT kiểm tra số dư → UPDATE trừ tiền.
+UPDATE giải phóng giường (kiểm tra rowAffected).
+UPDATE trạng thái bệnh nhân (kiểm tra rowAffected).
+Thành công → commit().
+Có lỗi → rollback().
+Đóng kết nối trong finally.

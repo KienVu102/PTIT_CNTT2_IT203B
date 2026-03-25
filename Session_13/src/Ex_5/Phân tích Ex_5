@@ -1,0 +1,30 @@
+PHẦN 1: PHÂN TÍCH RỦI RO & BẪY LỖI (EDGE CASES)
+Nếu không xử lý Transaction và Try-Catch cẩn thận, hệ thống dễ gặp mấy trường hợp “thảm họa” sau:
+
+Bẫy kiểu dữ liệu (Input Mismatch):
+Nhân viên vô tình nhập chữ “Năm trăm” vào ô tiền hoặc “abc” vào ô tuổi. Nếu không bắt lỗi,
+chương trình sẽ crash ngay, bệnh nhân đứng đợi mà hệ thống thì sập.
+Bẫy Race Condition (Giường bị chiếm đồng thời):
+Hai nhân viên cùng chọn giường 101 cho hai bệnh nhân khác nhau. Nếu không có Transaction,
+hệ thống có thể trừ tiền cả hai người nhưng chỉ một người được nằm giường, người kia mất tiền mà không có chỗ.
+Lỗi logic nghiệp vụ (Dữ liệu rác):
+Nhân viên nhập tên bệnh nhân để trống hoặc số tiền âm. Nếu không validate, database sẽ lưu bệnh
+ “vô danh” với số dư âm, làm sai lệch hết báo cáo tài chính cuối tháng.
+
+PHẦN 2: THIẾT KẾ KIẾN TRÚC & CƠ SỞ DỮ LIỆU
+1. Cấu trúc bảng Database
+Em thiết kế 3 bảng chính (sẽ gộp chung vào file data.sql):
+
+Patients: Lưu thông tin bệnh nhân (id, name, age).
+Beds: Lưu trạng thái giường (bed_id, status: 'Trong' hoặc 'Co nguoi').
+Finance: Lưu tiền tạm ứng (patient_id, amount).
+
+2. Sơ đồ luồng xử lý
+
+Nhận input từ Console (tên, tuổi, mã giường, số tiền).
+Validate dữ liệu (tuổi > 0, tiền > 0, tên không rỗng).
+Mở Connection và tắt autoCommit (setAutoCommit(false)).
+Thực hiện lần lượt 3 lệnh SQL: Insert Patient → Update Bed → Insert Finance.
+Kiểm tra rowAffected sau mỗi lệnh, nếu bằng 0 thì throw Exception.
+Nếu tất cả thành công → commit(). Gặp lỗi bất kỳ → rollback().
+Đóng kết nối và thông báo kết quả cho người dùng.

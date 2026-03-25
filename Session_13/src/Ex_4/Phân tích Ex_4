@@ -1,0 +1,22 @@
+PHẦN 1: PHÂN TÍCH & ĐỀ XUẤT GIẢI PHÁP
+1. Phân tích I/O
+
+Input: Không bắt buộc (mặc định lấy bệnh nhân trong ngày hôm nay).
+Output: List<BenhNhanDTO> (mỗi DTO gồm id, ten, tuoi và List<DichVuDTO> dsDichVu).
+
+2. Đề xuất 2 giải pháp
+
+Giải pháp 1 (N+1 Query): 1 query lấy bệnh nhân + vòng lặp 500 lần lấy dịch vụ → tổng 501 query (rất chậm).
+Giải pháp 2 (LEFT JOIN): Chỉ 1 query duy nhất lấy hết dữ liệu, sau đó group bằng Java trên RAM.
+
+PHẦN 2: SO SÁNH & LỰA CHỌN
+Giải pháp 1 (N+1) dùng đến 501 query, tốc độ chậm (10-15 giây), làm nghẽn mạng.
+Giải pháp 2 (LEFT JOIN) chỉ dùng 1 query, tốc độ dưới 1 giây, tối ưu hơn rất nhiều.
+Chốt lựa chọn: Em chọn Giải pháp 2 (LEFT JOIN) để đáp ứng yêu cầu phản hồi dưới 1 giây của Ban giám đốc.
+PHẦN 3: THIẾT KẾ & TRIỂN KHAI
+Mã giả:
+
+Chạy SQL: SELECT * FROM BenhNhan b LEFT JOIN DichVuSuDung d ON b.id = d.maBenhNhan
+Dùng Map<Integer, BenhNhanDTO> để group dữ liệu.
+Duyệt ResultSet, tạo bệnh nhân mới nếu chưa có và thêm dịch vụ vào list.
+Trả về map.values().

@@ -1,0 +1,9 @@
+Khi tạo một Connection, JDBC mặc định đặt autoCommit = true.
+Nghĩa là mỗi lệnh executeUpdate() sẽ được commit ngay lập tức.
+Trong code
+
+ps1.executeUpdate() trừ thuốc trong kho → thay đổi được commit luôn.
+Dòng int x = 10 / 0; gây ra lỗi ArithmeticException.
+Chương trình nhảy vào khối catch, thao tác ghi bệnh án không được thực hiện.
+
+Kết quả: Thuốc đã bị trừ nhưng bệnh án chưa được ghi. Giao dịch bị “nửa vời”, vi phạm nguyên tắc Atomicity
